@@ -4,10 +4,23 @@ from collections import OrderedDict
 
 app = Flask(__name__)
 
+stations = pd.read_csv('data/stations.txt', skiprows=17)
+
+# Create a new DataFrame with desired column names
+new_columns = ['Station Id', 'Station Name']
+new_stations = pd.DataFrame(columns=new_columns)
+
+# Assign values from 'stations' DataFrame to 'new_stations' DataFrame
+new_stations[['Station Id',
+              'Station Name']] = \
+    stations[['STAID',
+              'STANAME                                 ']]
+new_stations = new_stations[:92]
+
 
 @app.route('/')
 def home():
-    return render_template('home.html')
+    return render_template('home.html', data=new_stations.to_html())
 
 
 @app.route('/api/v1/<station_id>/<date>/')
